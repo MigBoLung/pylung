@@ -1,0 +1,16 @@
+A un primo livello gestiamo tag MIG e confrontiamo. Vale a dire che prendiamo 2 file tag, calcoliamo i centroidi e verifichiamo:
+1. le distanze FATTO
+2. se il centroide sta dentro al GT FATTO
+3. l'overlap DA FARE
+
+per decidere come valutare l'inclusione usiamo uno strategy.
+Per evitare doppi ecc: si cicla sulle regioni del gt e si va
+a vedere se ci sono regioni che soddisfano, se sì si eliminano
+dalla lista dei falsi e si considera il nodulo come preso.
+
+FATTO
+
+DA testare FATTI TEST PRELIMINARI
+
+
+
