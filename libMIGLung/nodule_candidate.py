@@ -31,8 +31,8 @@ class SeriesCandidates:
         
 
 class SeriesCandidatesWithLabels:
-    def __init__(self, info, patient_id, series_id):
-        SeriesCandidates.__init__(info, patient_id, series_id)
+    def __init__(self, info, patient_id, series_id), feature_names:
+        SeriesCandidates.__init__(info, patient_id, series_id, feature_names)
         self.labels = []
 
     def addCandidate(self, nodulecandidate, label):
@@ -63,4 +63,39 @@ def writeCandidatesToCSV(series_candidates, output_file):
 
             oufile.write('\n')
 
-    
+def parseCandidatesCSV(input_file):
+    bool has_labels = False
+    with open(fname, 'r') as infile:
+        line = infile.readline()
+        if(!line.startswith("info:")):
+            raise ValueError("incorrect file format")
+        info = line.split(": ")[1]
+        line = infile.readline()
+        patient_id = line.split(": ")[1]
+        line = infile.readline()
+        series_id = line.split(": ")[1]
+        head = infile.readline()
+        
+        series_candidates = None
+        allfeatnames = head.split(",");
+
+        if head.endswith("label"):
+            has_labels = True
+            series_candidates = SeriesCandidatesWithLabels(info, patient_id, series_id, allfeatnames[5:-1])
+        else:
+            series_candidates = SeriesCandidates(info, patient_id,series_id, allfeatnames[5:])
+        
+
+        while (line = infile.read()):
+            if line.strip() == "":
+                continue
+            row = line.split(",");
+            noduletag = NoduleTag(row[1],row[2],row[0], 0,row[3],row[4])
+            if has_labels:
+                nodulecandidate = NoduleCandidate3d( noduletag , row[5:-1])
+                series_candidates.addCandidate(nodulecandidate, row[-1])
+            else:
+                series_candidates.addCandidate(nodulecandidate)
+
+        return series_candidates
+
